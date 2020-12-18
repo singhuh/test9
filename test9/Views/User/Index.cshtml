@@ -17,6 +17,9 @@
 					Name
 				</th>
 				<th>
+					Photo
+				</th>
+				<th>
 					Roles
 				</th>
 				<th></th>
@@ -29,6 +32,9 @@
 			</td>
 			<td>
 				@item.Name
+			</td>
+			<td>
+				<img src="data:image/png;base64,@Convert.ToBase64String(@item.Photo)" width="45" />
 			</td>
 			<td>
 				@item.Role
