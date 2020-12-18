@@ -1,13 +1,13 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+	ViewData["Title"] = "Register";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
-    <div class="col-md-4">
+	<div class="col-md-4">
 		<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
 			<h4>Create a new account.</h4>
 			<hr />
@@ -17,7 +17,7 @@
 				<label asp-for="Input.Name"></label>
 				<input asp-for="Input.Name" class="form-control" />
 				<span asp-validation-for="Input.Name" class="text-danger"></span>
-			</div>           
+			</div>
 			<div class="form-group">
 				<label asp-for="Input.Email"></label>
 				<input asp-for="Input.Email" class="form-control" />
@@ -33,41 +33,110 @@
 				<input asp-for="Input.ConfirmPassword" class="form-control" />
 				<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
 			</div>
-			<button type="submit" class="btn btn-primary">Register</button>
+			<div class="form-group">
+				<label asp-for="Input.Photo"></label>
+				<input type="file" id="upload" class="form-control border-0" />
+				<input type="hidden" id="ImgUrl" name="ImgUrl" value="" class="form-control border-0" />
+				<span asp-validation-for="Input.Photo" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div id="upload-demo" style="width:350px"></div>
+			</div>
+			<button type="submit" class="btn btn-primary upload-result">Register</button>
 		</form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h4>Use another service to register.</h4>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
+	</div>
+	@*<div class="col-md-6 col-md-offset-2">
+			<section>
+				<h4>Use another service to register.</h4>
+				<hr />
+				@{
+					if ((Model.ExternalLogins?.Count ?? 0) == 0)
+					{
+						<div>
+							<p>
+								There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+								for details on setting up this ASP.NET application to support logging in via external services.
+							</p>
+						</div>
+					}
+					else
+					{
+						<form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+							<div>
+								<p>
+									@foreach (var provider in Model.ExternalLogins)
+									{
+										<button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+									}
+								</p>
+							</div>
+						</form>
+					}
+				}
+			</section>
+		</div>*@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }
+
+
+<script>
+	$uploadCrop = $('#upload-demo').croppie({
+		enableExif: true,
+		viewport: {
+			width: 240,
+			height: 240,
+			type: 'circle'
+		},
+		boundary: {
+			width: 300,
+			height: 300
+		}
+	});
+
+	$('#upload').on('change', function () {
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			$uploadCrop.croppie('bind', {
+				url: e.target.result
+			}).then(function () {
+				console.log('jQuery bind complete');
+			})
+		}
+		reader.readAsDataURL(this.files[0]);
+	});
+
+
+
+	$('.upload-result').on('click', function (ev) {
+		$uploadCrop.croppie('result', {
+			type: 'canvas',
+			size: 'viewport'
+		}).then(function (resp) {
+			console.log("Image cropped:" + resp);
+			var img1 = resp.substring(22);
+
+			$("#ImgUrl").val(img1);
+			console.log("Trimmed Image: " + img1)
+			var myData = new FormData(this);
+
+
+			$.ajax(
+				{
+					//url: "/Identity/Account/Manage/ChangePhoto",
+					url: "/Identity/Account/Register",
+					type: "POST",
+					data: myData,
+					cache: false,
+					contentType: false,
+					success: function (data) {
+
+					}
+				});
+
+		});
+
+	});
+</script>

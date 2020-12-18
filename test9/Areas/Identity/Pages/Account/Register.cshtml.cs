@@ -20,14 +20,14 @@ namespace test9.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -63,22 +63,34 @@ namespace test9.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             public string Name { get; set; }
+            public string MNumber { get; set; }
+            public byte[] Photo { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string ImgUrl, string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            returnUrl = returnUrl ?? Url.Content("~/");
+            if (ImgUrl == null || ImgUrl.Length == 0)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Name = Input.Name };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                return Page();
+            }
+            var img = Convert.FromBase64String(ImgUrl);
+            Input.Photo = img;
+
+            var user = new ApplicationUser 
+            { UserName = Input.Email, Email = Input.Email, Name = Input.Name, Photo = Input.Photo };
+
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //if (ModelState.IsValid)
+            //{
+/*                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, Name = Input.Name, Photo=Input.Photo };
+*/                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -108,7 +120,7 @@ namespace test9.Areas.Identity.Pages.Account
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
+            //}
 
             // If we got this far, something failed, redisplay form
             return Page();

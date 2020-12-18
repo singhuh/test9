@@ -14,6 +14,7 @@ namespace test9.Models
         [Required]
         public string Name { get; set; }
         public string MNumber { get; set; }
+        public byte[] Photo { get; set; }
         [NotMapped]
         public string RoleId { get; set; }
         [NotMapped]
