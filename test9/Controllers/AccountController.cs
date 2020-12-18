@@ -57,7 +57,8 @@ namespace test9.Controllers
             returnurl = returnurl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, MNumber = model.MNumber, Photo=model.Photo };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, 
+                                MNumber = model.MNumber, Photo=model.Photo };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 { if(model.Email== "rokeyrs@ucmail.uc.edu")

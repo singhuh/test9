@@ -1,0 +1,48 @@
+﻿@model IEnumerable<test9.Models.Resume>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List of Resumes</h1>
+
+<p>
+    <a asp-action="Create">Add New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResumeFile)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.UserId)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Description)
+			</td>
+			<td>
+			<td>
+				<iframe src="@Url.Content(item.ResumeFile)" style="width: 50%; height: 30px"></iframe>
+			</td>
+			<td>
+				<a asp-action="Edit" asp-route-id="@item.ResumeID">Edit</a> |
+				<a asp-action="Details" asp-route-id="@item.ResumeID">Details</a> |
+				<a asp-action="Delete" asp-route-id="@item.ResumeID">Delete</a>
+			</td>
+		</tr>
+}
+    </tbody>
+</table>

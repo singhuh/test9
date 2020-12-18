@@ -38,9 +38,8 @@ namespace test9.Controllers
                 {
                     user.Role = roles.FirstOrDefault(u => u.Id == role.RoleId).Name;
                 }
-                            
+                           
             }
-
             return View(userList);
         }
 

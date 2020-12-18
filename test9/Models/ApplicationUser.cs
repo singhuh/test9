@@ -21,5 +21,6 @@ namespace test9.Models
         public string Role { get; set; }
         [NotMapped]
         public IEnumerable<SelectListItem> RoleList { get; set; }
+
     }
 }
