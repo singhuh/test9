@@ -24,9 +24,10 @@ namespace test9.Services
             _mailjetOptions = _configuration.GetSection("MailJet").Get<MailjetOptions>();
 
             MailjetClient client = new MailjetClient(_mailjetOptions.ApiKey, _mailjetOptions.SecretKey);
-            //{
-            //    Version = ApiVersion.V3_1,
-            //};
+            {
+                var Version = ApiVersion.V3_1;
+            };
+
             MailjetRequest request = new MailjetRequest
             {
                 Resource = Send.Resource,
@@ -58,7 +59,7 @@ namespace test9.Services
       },
      }
              });
-            await client.PostAsync(request);
+           var response= await client.PostAsync(request);
             //if (response.IsSuccessStatusCode)
             //{
             //    Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));

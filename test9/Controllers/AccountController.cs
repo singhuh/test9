@@ -13,12 +13,12 @@ namespace test9.Controllers
 { [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, 
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
             RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -57,7 +57,8 @@ namespace test9.Controllers
             returnurl = returnurl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, MNumber = model.MNumber };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, 
+                                MNumber = model.MNumber, Photo=model.Photo };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 { if(model.Email== "rokeyrs@ucmail.uc.edu")
